@@ -2,8 +2,8 @@ package br.com.rafaellbarros.order.application;
 
 import br.com.rafaellbarros.core.product.model.Product;
 import br.com.rafaellbarros.core.product.repository.ProductRepository;
-import br.com.rafaellbarros.user.User;
-import br.com.rafaellbarros.user.UserRepository;
+import br.com.rafaellbarros.user.infrastructure.persistence.entity.UserEntity;
+import br.com.rafaellbarros.user.domain.repository.UserRepository;
 import br.com.rafaellbarros.integration.invetory.InventoryClient;
 import br.com.rafaellbarros.integration.payment.PaymentClient;
 import br.com.rafaellbarros.order.application.dto.OrderItemInput;
@@ -16,6 +16,7 @@ import br.com.rafaellbarros.order.events.OrderCreatedEvent;
 import br.com.rafaellbarros.order.events.OrderPaidEvent;
 import br.com.rafaellbarros.order.infrastructure.OrderRepository;
 import br.com.rafaellbarros.order.infrastructure.OrderValidator;
+import br.com.rafaellbarros.user.infrastructure.persistence.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -34,7 +35,7 @@ public class OrderCommandService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final JpaUserRepository userRepository;
     private final OrderValidator validator;
     private final PaymentClient paymentClient;
     private final InventoryClient inventoryClient;
@@ -44,7 +45,7 @@ public class OrderCommandService {
         log.info("Creating order for user: {}", userId);
 
         // Validar usuário
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new OrderBusinessException("User not found with id: " + userId, "USER_NOT_FOUND"));
 
         // Validar itens do pedido

@@ -1,10 +1,8 @@
-package br.com.rafaellbarros.user;
+package br.com.rafaellbarros.user.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -14,8 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_roles", schema = "app_db")
-public class Role {
+@Table(name = "roles", schema = "user_schema")
+public class RoleEntity {
 
     @Id
     @Column(name = "id", length = 36, nullable = false)

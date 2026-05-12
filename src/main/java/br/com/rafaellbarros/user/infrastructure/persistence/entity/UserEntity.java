@@ -1,7 +1,12 @@
-package br.com.rafaellbarros.user;
+package br.com.rafaellbarros.user.infrastructure.persistence.entity;
 
+import br.com.rafaellbarros.user.domain.enums.AuthProvider;
+import br.com.rafaellbarros.user.domain.enums.UserStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -14,8 +19,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_users", schema = "app_db")
-public class User {
+@Table(name = "users", schema = "user_schema")
+public class UserEntity extends BaseEntity {
 
 
     @Id
@@ -26,9 +31,9 @@ public class User {
     @Column(name = "external_auth_id", length = 255)
     private String externalAuthId;
 
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "auth_provider", length = 50, nullable = false)
-    private String authProvider;
+    private AuthProvider authProvider;
 
 
     @Column(name = "email", length = 255, unique = true, nullable = false)
@@ -39,34 +44,26 @@ public class User {
     private String fullName;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50, nullable = false)
-    private String status;
+    private UserStatus status;
 
 
     @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "user_user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_roles",
+            schema = "user_schema",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

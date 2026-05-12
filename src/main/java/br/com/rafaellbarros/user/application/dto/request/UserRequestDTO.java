@@ -1,5 +1,7 @@
-package br.com.rafaellbarros.user;
+package br.com.rafaellbarros.user.application.dto.request;
 
+import br.com.rafaellbarros.user.domain.enums.AuthProvider;
+import br.com.rafaellbarros.user.domain.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +18,8 @@ import java.util.UUID;
 public class UserRequestDTO {
     private UUID id;
     private String externalAuthId;
-    private String authProvider;
+    private AuthProvider authProvider;
     private String email;
     private String fullName;
-    private String status;
+    private UserStatus status;
 }

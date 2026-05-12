@@ -1,0 +1,67 @@
+# application-stage.yml
+spring:
+  config:
+    activate:
+      on-profile: stage
+
+  datasource:
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=master;encrypt=true;trustServerCertificate=true}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: false
+
+  flyway:
+    enabled: false
+    baselineOnMigrate: false
+    validateOnMigrate: false
+    locations:
+      - classpath:db/migration/user
+
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    schema:
+      locations: classpath:graphql/
+      file-extensions: .graphqls
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST
+
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: false
+      completion:
+        enabled: false
+    modules:
+      # Permite dependências explícitas entre módulos
+      detect-dependencies: true
+      # Mostra o módulo no log
+      log-violations: true
+
+  integration:
+    payment:
+      mode: mock
+      mock:
+        failure-rate: 20  # 20% de falhas para teste
+    inventory:
+      mode: mock
+    notification:
+      mode: mock

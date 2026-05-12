@@ -1,6 +1,6 @@
 package br.com.rafaellbarros.order.domain;
 
-import br.com.rafaellbarros.user.User;
+import br.com.rafaellbarros.user.infrastructure.persistence.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -13,9 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -31,7 +29,7 @@ public class Order {
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private UserEntity user;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

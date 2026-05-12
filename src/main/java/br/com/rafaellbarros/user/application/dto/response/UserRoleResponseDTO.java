@@ -1,4 +1,4 @@
-package br.com.rafaellbarros.user;
+package br.com.rafaellbarros.user.application.dto.response;
 
 import lombok.*;
 

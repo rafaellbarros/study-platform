@@ -47,6 +47,11 @@ stages:
               Contents: 'target/*.jar'
               TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
+          - script: |
+              mv $(Build.ArtifactStagingDirectory)/*.jar \
+                 $(Build.ArtifactStagingDirectory)/app.jar
+            displayName: 'Rename JAR'
+
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Build Artifact'
 
@@ -85,9 +90,5 @@ stages:
                     azureSubscription: $(azureSubscription)
                     appType: 'webAppLinux'
                     appName: 'study-platform'
-                    package: '$(Pipeline.Workspace)/drop/*.jar'
+                    package: '$(Pipeline.Workspace)/drop/target/*.jar'
                     runtimeStack: 'JAVA|21-java21'
-
-                    startupCommand: >
-                      java -jar
-                      /home/site/wwwroot/*.jar

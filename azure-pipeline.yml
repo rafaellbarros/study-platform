@@ -85,7 +85,7 @@ stages:
                     azureSubscription: $(azureSubscription)
                     appType: 'webAppLinux'
                     appName: 'study-platform'
-                    package: '$(Pipeline.Workspace)/drop/*.jar'
+                    package: '$(Pipeline.Workspace)/drop/target/*.jar'
                     runtimeStack: 'JAVA|21-java21'
 
                     startupCommand: >

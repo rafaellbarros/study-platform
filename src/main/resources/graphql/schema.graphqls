@@ -1,0 +1,87 @@
+# Tipos
+type Product {
+    id: ID!
+    name: String!
+    description: String
+    price: Float!
+    stock: Int!
+    createdAt: String!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    createdAt: String!
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    PROCESSING
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+type OrderItem {
+    id: ID!
+    product: Product!
+    quantity: Int!
+    price: Float!
+    subtotal: Float!
+}
+
+type Order {
+    id: ID!
+    user: User!
+    status: OrderStatus!
+    total: Float!
+    createdAt: String!
+    items: [OrderItem!]!
+}
+
+# Inputs
+input CreateOrderInput {
+    userId: ID!
+    items: [OrderItemInput!]!
+}
+
+input OrderItemInput {
+    productId: ID!
+    quantity: Int!
+}
+
+input ProcessPaymentInput {
+    orderId: ID!
+    amount: Float!
+    cardNumber: String!
+    cvv: String!
+    cardHolderName: String!
+}
+
+input CancelOrderInput {
+    orderId: ID!
+    reason: String!
+}
+
+# Queries
+type Query {
+    # Catálogo
+    products(skip: Int, limit: Int): [Product!]!
+    product(id: ID!): Product
+    searchProducts(term: String!): [Product!]!
+
+    # Pedidos
+    orders(userId: ID): [Order!]!
+    order(id: ID!): Order
+    ordersByStatus(status: String!): [Order!]!
+}
+
+# Mutations
+type Mutation {
+    # Pedidos
+    createOrder(input: CreateOrderInput!): Order!
+    processPayment(input: ProcessPaymentInput!): Order!
+    cancelOrder(input: CancelOrderInput!): Order!
+}

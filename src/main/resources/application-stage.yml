@@ -1,28 +1,30 @@
-# application-local.yml
+# application-stage.yml
 spring:
-  config:
-    activate:
-      on-profile: local
-
   datasource:
-    url: jdbc:sqlserver://localhost:14333;databaseName=master;encrypt=true;trustServerCertificate=true;
-    username: sa
-    password: Root2008@Password123!
+    url: ${DB_URL:}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
   jpa:
-    hibernate.ddl-auto: none
-    generate-ddl: false
-    show-sql: true
+    hibernate:
+      ddl-auto: none
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServerDialect
-        format_sql: true
+        format_sql: false
 
   flyway:
-    enabled: true
-    baselineOnMigrate: true
-    validateOnMigrate: true
+    enabled: false
+    baselineOnMigrate: false
+    validateOnMigrate: false
     locations:
       - classpath:db/migration/user
 
@@ -41,9 +43,9 @@ spring:
     events:
       jdbc:
         schema-initialization:
-          enabled: true
+          enabled: false
       completion:
-        enabled: true
+        enabled: false
     modules:
       # Permite dependências explícitas entre módulos
       detect-dependencies: true

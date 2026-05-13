@@ -87,3 +87,34 @@ stages:
                     appName: 'study-platform'
                     package: '$(Pipeline.Workspace)/drop/target/*.jar'
                     runtimeStack: 'JAVA|21-java21'
+
+                - task: AzureAppServiceSettings@1
+                  displayName: 'Configure App Service Settings'
+
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    appName: 'study-platform'
+
+                    appSettings: |
+                      [
+                        {
+                          "name": "SPRING_PROFILES_ACTIVE",
+                          "value": "stage",
+                          "slotSetting": false
+                        },
+                        {
+                          "name": "DB_URL",
+                          "value": "$(DB_URL)",
+                          "slotSetting": false
+                        },
+                        {
+                          "name": "DB_USERNAME",
+                          "value": "$(DB_USERNAME)",
+                          "slotSetting": false
+                        },
+                        {
+                          "name": "DB_PASSWORD",
+                          "value": "$(DB_PASSWORD)",
+                          "slotSetting": false
+                        }
+                      ]

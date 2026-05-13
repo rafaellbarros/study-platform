@@ -47,11 +47,6 @@ stages:
               Contents: 'target/*.jar'
               TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-          - script: |
-              mv $(Build.ArtifactStagingDirectory)/*.jar \
-                 $(Build.ArtifactStagingDirectory)/app.jar
-            displayName: 'Rename JAR'
-
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Build Artifact'
 

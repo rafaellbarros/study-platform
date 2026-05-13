@@ -28,7 +28,7 @@ stages:
 
             inputs:
               mavenPomFile: 'pom.xml'
-              goals: 'clean package -DskipTests'
+              goals: 'clean package -Pstage -DskipTests'
               publishJUnitResults: false
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '21'

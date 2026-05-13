@@ -19,6 +19,10 @@
         <spring-modulith.version>1.4.11</spring-modulith.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <flyway.version>11.20.3</flyway.version>
+
+        <jar.finalName>
+            ${project.artifactId}-${project.version}
+        </jar.finalName>
     </properties>
     <dependencies>
         <dependency>
@@ -99,7 +103,31 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <jar.finalName>
+                    ${project.artifactId}-${project.version}
+                </jar.finalName>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>stage</id>
+            <properties>
+                <jar.finalName>app</jar.finalName>
+            </properties>
+        </profile>
+
+    </profiles>
+
     <build>
+
+        <finalName>${jar.finalName}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

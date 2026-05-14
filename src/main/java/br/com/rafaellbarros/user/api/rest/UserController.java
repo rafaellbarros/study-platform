@@ -1,49 +1,68 @@
 package br.com.rafaellbarros.user.api.rest;
 
 import br.com.rafaellbarros.user.application.dto.request.UserRequestDTO;
-import br.com.rafaellbarros.user.application.service.UserApplicationService;
-import br.com.rafaellbarros.user.domain.model.User;
+import br.com.rafaellbarros.user.application.dto.response.UserResponseDTO;
+import br.com.rafaellbarros.user.application.usecase.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserApplicationService userApplicationService;
+    private final CreateUserUseCase createUserUseCase;
+    private final ListUsersUseCase listUsersUseCase;
+    private final FindUserByIdUseCase findUserByIdUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        return ResponseEntity.ok(userApplicationService.list());
+    public ResponseEntity<List<UserResponseDTO>> all() {
+        log.info("[CONTROLLER] User all received.");
+        var response = listUsersUseCase.execute();
+        log.info("[CONTROLLER] User all successfully. count={}", response.size());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable UUID id) {
-        var responseDTO = userApplicationService.findById(id);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<UserResponseDTO> find(@PathVariable UUID id) {
+        log.info("[CONTROLLER] User find received. id={}", id);
+        var response = findUserByIdUseCase.execute(id);
+        log.info("[CONTROLLER] User find successfully. id={}", response.getId());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<User> save(@Valid @RequestBody User dto) {
-        var responseDTO = userApplicationService.save(dto);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO dto) {
+        log.info("[CONTROLLER] Create user request received. email={}", dto.getEmail());
+        var response = createUserUseCase.execute(dto);
+        log.info("[CONTROLLER] User created successfully. id={}", response.getId());
+        return ResponseEntity.ok(response);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO dto) {
+        log.info("[CONTROLLER] Update user request received. email={}", dto.getEmail());
         dto.setId(id);
-        return ResponseEntity.ok(userApplicationService.update(dto));
+        UserResponseDTO response = updateUserUseCase.execute(dto);
+        log.info("[CONTROLLER] User updated successfully. id={}", response.getId());
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        userApplicationService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        log.info("[CONTROLLER] User delete request . id={}", id);
+        deleteUserUseCase.execute(id);
+        log.info("[CONTROLLER] User delete successfully. id={}", id);
         return ResponseEntity.noContent().build();
     }
 

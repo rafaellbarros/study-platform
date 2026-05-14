@@ -6,16 +6,17 @@ import br.com.rafaellbarros.user.infrastructure.persistence.entity.UserEntity;
 import br.com.rafaellbarros.user.infrastructure.persistence.mapper.UserPersistenceMapper;
 import br.com.rafaellbarros.user.infrastructure.persistence.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceAdapter
-        implements UserRepository {
+public class UserPersistenceAdapter implements UserRepository {
 
     private final JpaUserRepository repository;
 
@@ -23,6 +24,9 @@ public class UserPersistenceAdapter
 
     @Override
     public Optional<User> findById(UUID id) {
+
+        log.debug("[PERSISTENCE] User find in database. id={}", id);
+
 
         return repository.findById(id)
                 .map(mapper::toDomain);
@@ -49,8 +53,11 @@ public class UserPersistenceAdapter
 
     @Override
     public void delete(User user) {
-        repository.delete(
-                mapper.toEntity(user)
-        );
+        repository.delete(mapper.toEntity(user));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
     }
 }

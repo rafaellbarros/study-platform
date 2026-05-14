@@ -1,29 +1,22 @@
 package br.com.rafaellbarros.user.application.usecase;
 
-
 import br.com.rafaellbarros.user.application.dto.request.UserRequestDTO;
 import br.com.rafaellbarros.user.application.dto.response.UserResponseDTO;
 import br.com.rafaellbarros.user.application.mapper.UserMapper;
 import br.com.rafaellbarros.user.application.service.UserApplicationService;
-import br.com.rafaellbarros.user.domain.model.Role;
 import br.com.rafaellbarros.user.domain.model.User;
 import br.com.rafaellbarros.user.domain.police.UserPolicy;
-import br.com.rafaellbarros.user.domain.repository.RoleRepository;
 import br.com.rafaellbarros.user.domain.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CreateUserUseCase {
+public class UpdateUserUseCase {
 
     private final UserApplicationService applicationService;
-
-    private final RoleRepository roleRepository;
 
     private final UserDomainService domainService;
 
@@ -33,31 +26,25 @@ public class CreateUserUseCase {
 
 
     public UserResponseDTO execute(UserRequestDTO dto) {
+        log.info("[USECASE] Starting update user flow. email={}", dto.getEmail());
 
-        log.info("[USECASE] Starting create user flow. email={}", dto.getEmail());
+        User domain = applicationService.findById(dto.getId());
 
-        User domain = mapper.toDomain(dto);
 
         log.debug(
                 "[USECASE] DTO mapped to domain. email={}",
                 domain.getEmail()
         );
 
-        Set<Role> roles = roleRepository.findByNames(dto.getRoles());
-        domain.setRoles(roles);
-
         policy.validateCreate(domain);
 
-        domainService.validateNewUser(domain);
-        domainService.activate(domain);
-
-        User saved = applicationService.create(domain);
+        mapper.fromDTO(dto , domain);
+        var saved = applicationService.update(domain);
 
         log.info(
                 "[USECASE] User persisted successfully. id={}",
                 saved.getId()
         );
-
 
         return mapper.toDTO(saved);
     }

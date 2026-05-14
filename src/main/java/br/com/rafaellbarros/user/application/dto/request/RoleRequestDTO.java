@@ -1,4 +1,4 @@
-package br.com.rafaellbarros.user.application.dto.response;
+package br.com.rafaellbarros.user.application.dto.request;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class RoleResponseDTO {
+public class RoleRequestDTO {
     private UUID id;
     private String name;
 }

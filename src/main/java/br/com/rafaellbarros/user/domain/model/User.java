@@ -1,6 +1,7 @@
 package br.com.rafaellbarros.user.domain.model;
 
 import br.com.rafaellbarros.user.domain.enums.AuthProvider;
+import br.com.rafaellbarros.user.domain.enums.RoleNames;
 import br.com.rafaellbarros.user.domain.enums.UserStatus;
 import br.com.rafaellbarros.user.domain.valueobject.Email;
 import lombok.*;
@@ -26,4 +27,7 @@ public class User {
     private LocalDateTime updatedAt;
     private Set<Role> roles;
 
+    public boolean isAdmin() {
+        return roles.stream().anyMatch(role -> role.getName().equals(RoleNames.ADMIN.toString()));
+    }
 }

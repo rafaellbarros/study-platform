@@ -1,11 +1,10 @@
 # application-local.yml
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:14333;databaseName=master;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:14333;databaseName=study_platform;encrypt=true;trustServerCertificate=true;
     username: sa
     password: Root2008@Password123!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-
   jpa:
     hibernate.ddl-auto: none
     generate-ddl: false
@@ -15,11 +14,14 @@ spring:
         dialect: org.hibernate.dialect.SQLServerDialect
         format_sql: true
 
+
   flyway:
     enabled: true
+    schemas:  flyway_schema
     baselineOnMigrate: true
     validateOnMigrate: true
     locations:
+      - classpath:db/migration/modulith
       - classpath:db/migration/user
 
   graphql:
@@ -33,18 +35,7 @@ spring:
       allowed-origins: "*"
       allowed-methods: GET, POST
 
-  modulith:
-    events:
-      jdbc:
-        schema-initialization:
-          enabled: true
-      completion:
-        enabled: true
-    modules:
-      # Permite dependências explícitas entre módulos
-      detect-dependencies: true
-      # Mostra o módulo no log
-      log-violations: true
+
 
   integration:
     payment:
@@ -55,3 +46,24 @@ spring:
       mode: mock
     notification:
       mode: mock
+
+    #### Events Config ######
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+      completion:
+        enabled: true
+      republish-outstanding-events-on-restart: true
+    modules:
+      # Permite dependências explícitas entre módulos
+      detect-dependencies: true
+      # Mostra o módulo no log
+      log-violations: true
+
+logging:
+  level:
+    root: INFO
+    br.com.rafaellbarros.user: DEBUG
+    org.springframework.cache: DEBUG
